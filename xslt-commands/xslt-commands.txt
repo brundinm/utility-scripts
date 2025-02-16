@@ -1,0 +1,26 @@
+Commands to run XSLT transformations on an XML MODS file using various utilities
+
+* xsltproc (C utility; implements XLST 1.0)
+xsltproc cleanup_mods.xsl mods-test.xml
+
+* XMLStarlet (C utility; implements XSLT 1.0)
+xml tr cleanup_mods.xsl mods-test.xml
+
+* Xalan-Java (Java utility; implements XSLT 1.0; XSLT processor that is part of the Islandora stack)
+- using the Java JAR ("-jar") argument method:
+java -jar /usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/lib/xalan.jar -IN mods-test.xml -XSL cleanup_mods.xsl
+java -jar "C:\Program Files (x86)\Xalan\xalan.jar" -IN mods-test.xml -XSL cleanup_mods-rev.xsl
+- using the Java CLASSPATH ("-cp" or "-classpath") argument method:
+java -cp /usr/local/fedora/tomcat/webapps/fedoragsearch/WEB-INF/lib/*: org.apache.xalan.xslt.Process -IN mods-test.xml -XSL cleanup_mods.xsl
+
+* Saxon-HE (Java utility; implements XSLT 2.0)
+- using the Java JAR ("-jar") argument method:
+java -jar "/Users/brundin/Applications/Saxon-HE/saxon9he.jar" mods-test.xml cleanup_mods.xsl
+- using the Java CLASSPATH ("-cp" or "-classpath") argument method:
+java -cp "/Users/brundin/Applications/Saxon-HE/saxon9he.jar" net.sf.saxon.Transform mods-test.xml cleanup_mods.xsl
+
+* XML Calabash (Java utility; implements XSLT 2.0; runs an XProc pipeline file that calls the XSLT transform file; uses Saxon-HE as the XSLT processor)
+- using the Java JAR ("-jar") argument method:
+java -jar "/Users/brundin/Applications/XML_Calabash/xmlcalabash-1.1.15-97.jar" cleanup_mods.xpl
+- using the Java CLASSPATH ("-cp" or "-classpath") argument method:
+java -cp "/Users/brundin/Applications/XML_Calabash/xmlcalabash-1.1.15-97.jar;lib/*" com.xmlcalabash.drivers.Main cleanup_mods.xpl

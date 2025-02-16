@@ -1,0 +1,61 @@
+*** Commands for crossword, anagram, and Wordle searches ***
+
+-- Crossword searches --
+* Crossword searches using grep, using the letters "s***c**m":
+   grep -i '^s...c..m$' words-unix | tr '\n' ' ' && echo
+   grep -i '^s...c..m$' words-unix | tr '\n' ' '; echo
+      Will retrieve: silicium Sinicism solecism Stoicism stoicism
+   grep -i '^s...c..m$' words-unix | tr '\n' ' ' | wc -w
+      Will retrieve: 5
+* Crossword search using a Bash script and grep, using the letters "s***c**m":
+   sh crossword.sh
+      Will retrieve: silicium Sinicism solecism Stoicism stoicism
+* Crossword search using a Python script and grep, using the letters "s***c**m":
+   python crossword.sh
+      Will retrieve: silicium Sinicism solecism Stoicism stoicism
+
+-- Anagram searches --
+* Anagram search using grep, using the word "break":
+   grep '^.....$' words-unix | grep 'b' | grep 'r' | grep 'e' | grep 'a' | grep 'k' | tr '\n' ' ' && echo
+      Will retrieve: "baker brake break kebar"
+* Anagram search using an AWK script and grep, using the word "break":
+   gawk -f anagram.awk words-unix | grep -i ' break '
+      Will retrieve: "baker brake break kebar"
+* Anagram search using a Python script, Bash, and AWK, using the word "break":
+   sh anagram.sh
+      Will retrieve: "baker", "brake", and "break" at the bottom of the
+      search results
+
+-- Wordle searches --
+* Wordle searches using grep:
+- Approach 1: focus on filtering words using piped grep commands.
+Three categories for words are: correct letters in correct position;
+incorrect letters; correct letters in incorrect position.  Examples:
+   grep '^[a-z]....$' words-unix | grep -v '[foh]' | grep 'r' | grep 't' | grep '..[^r][^t].' | sort -R | head -n1
+   grep '^[a-z]....$' words-unix | grep -v '[aecfoh]' | grep 'r' | grep 't' | grep '[^r].[^r][^t][^t]' | wc -l
+   grep '^[a-z]....$' words-unix | grep 'tru..' | grep -v '[aecflohy]' | tr '\n' ' ' && echo
+- Approach 2: focus on filtering 5 sequential character positions
+using a single grep command.
+Three categories for letters are: correct letter in correct position;
+incorrect letters; correct letters in incorrect position.  Examples:
+   grep '^[a-z]....$' words-unix | grep -E 's[earotl]{4}' | tr '\n' ' ' && echo
+   grep '^[a-z]....$' words-unix | grep -E '[alinc]{5}' | tr '\n' ' '; echo
+   grep '^[a-z]....$' words-unix | grep -E '[^storecal]an([^storeal]c|c[^storeal])' | tr '\n' ' '; echo
+   grep '^[a-z]....$' words-unix | grep -P 's(?=[^te][^teo][^ter][^te])(?=.*o.*)(?=.*r.*)'
+      Notes: - "-E" (ERE) flag so don't have to escape braces ("{" and "}"),
+               parentheses ("(" and ")"), and the pipe divider ("|").
+             - "-P" (PCRE) flag so can use positive lookahead ("?="), in
+               addition to not having to escape certain characters ("(", ")",
+               and "|").
+             - All the above grep commands work with both GNU grep and BSD grep,
+               including the ERE ("E") and PCRE ("P") flag options.
+             - But GNU PCRE grep on WSL includes two false matches, one string
+               at the beginning and one string at the end of the search results
+               list.
+* Wordle searches using C++ program:
+   ./wordle ??o?? elianr st??s ?s???
+      Notes: - know that "o" is the third letter.
+             - know that "e", "l", "i", "a", "n", and "r" are not included.
+             - know that "s" and "t" are included, but "t" can't be the 
+               second letter and "s" can't be the first, second, or fifth
+               letter.
